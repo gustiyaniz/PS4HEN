@@ -27,6 +27,19 @@
         </footer>
     </div>
 
+    <div id="successCloseDialog" class="success-dialog" role="dialog" aria-modal="true" aria-labelledby="successDialogTitle" hidden>
+        <div class="success-dialog-card">
+            <div class="success-dialog-icon">✓</div>
+            <h2 id="successDialogTitle">Proses Berhasil</h2>
+            <p id="successDialogMessage">GoldHEN berhasil dimuat.</p>
+            <p id="closeFallbackMessage" class="close-fallback" hidden>Browser tidak dapat ditutup otomatis. Silakan tekan tombol PS lalu tutup Browser secara manual.</p>
+            <div class="success-dialog-actions">
+                <button type="button" class="dialog-button dialog-button-primary" onclick="closePs4Browser()">Tutup Browser</button>
+                <button type="button" class="dialog-button dialog-button-secondary" onclick="hideSuccessCloseDialog()">Tetap di Halaman</button>
+            </div>
+        </div>
+    </div>
+
 <script>
 var uaFull = navigator.userAgent;
 var match = uaFull.match(/PlayStation 4[ /]([\d.]+)/i);
@@ -42,6 +55,36 @@ function updateStatus(msg, isError) {
 
 function onScriptError() {
     updateStatus('Content not found. Clear browser data, then install the cache again.', true);
+}
+
+function showSuccessCloseDialog(message) {
+    var dialog = document.getElementById('successCloseDialog');
+    var dialogMessage = document.getElementById('successDialogMessage');
+    var fallbackMessage = document.getElementById('closeFallbackMessage');
+    dialogMessage.textContent = message || 'GoldHEN berhasil dimuat.';
+    fallbackMessage.hidden = true;
+    dialog.hidden = false;
+}
+
+function hideSuccessCloseDialog() {
+    document.getElementById('successCloseDialog').hidden = true;
+}
+
+function closePs4Browser() {
+    var fallbackMessage = document.getElementById('closeFallbackMessage');
+    fallbackMessage.hidden = true;
+
+    try {
+        window.open('', '_self');
+        window.close();
+    } catch (error) {
+        fallbackMessage.hidden = false;
+        return;
+    }
+
+    setTimeout(function() {
+        fallbackMessage.hidden = false;
+    }, 800);
 }
 
 if (!isPS4) {

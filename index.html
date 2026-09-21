@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" manifest="run/css.manifest">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,8 +40,58 @@
     <script>
         var msgs = document.getElementById('msgs');
 
+        var hostStarted = false;
+
         function updateStatus(msg) {
             msgs.innerHTML = msg;
+        }
+
+        function openHost() {
+            if (hostStarted) return;
+            hostStarted = true;
+            updateStatus('Offline cache ready. Loading host…');
+            setTimeout(function() {
+                window.location.replace('run/index.html');
+            }, 700);
+        }
+
+        function prepareCacheAndOpenHost() {
+            var appCache = window.applicationCache;
+
+            if (!appCache) {
+                openHost();
+                return;
+            }
+
+            appCache.addEventListener('checking', function() {
+                updateStatus('Checking offline cache…');
+            }, false);
+
+            appCache.addEventListener('downloading', function() {
+                updateStatus('Saving host for offline use…');
+            }, false);
+
+            appCache.addEventListener('progress', function(event) {
+                if (event.total) {
+                    updateStatus('Saving offline cache: ' + Math.round(event.loaded / event.total * 100) + '%');
+                }
+            }, false);
+
+            appCache.addEventListener('cached', openHost, false);
+            appCache.addEventListener('noupdate', openHost, false);
+            appCache.addEventListener('updateready', function() {
+                try { appCache.swapCache(); } catch (error) {}
+                openHost();
+            }, false);
+
+            appCache.addEventListener('error', function() {
+                updateStatus('Cache update unavailable. Opening saved host…');
+                setTimeout(openHost, 900);
+            }, false);
+
+            if (appCache.status === appCache.IDLE) {
+                setTimeout(openHost, 1800);
+            }
         }
 
         // التحقق من الجهاز والإصدار
@@ -61,12 +111,7 @@
 
             if (fwNum >= 10.00 && fwNum <= 11.02) {
                 updateStatus('PS4 firmware ' + fwVersion + ' detected');
-                
-                // الانتظار ثم الذهاب إلى run
-                setTimeout(function() {
-                    updateStatus('Loading host…');
-                    window.location.replace('run/index.html');
-                }, 1500);
+                prepareCacheAndOpenHost();
             } else {
                 updateStatus('Firmware ' + fwVersion + ' is not supported. Requires 10.00–11.02.');
                 msgs.className = 'status-text error';
