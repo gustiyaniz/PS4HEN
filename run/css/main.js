@@ -54,9 +54,6 @@ async function doJb() {
 
     if (fn.setuid.invoke(0) !== -1) {
       msgs.innerHTML = "GoldHEN sudah aktif.";
-      if (typeof showSuccessCloseDialog === "function") {
-        showSuccessCloseDialog("GoldHEN sudah aktif di konsol.");
-      }
       return;
     }
 
@@ -115,9 +112,6 @@ async function doJb() {
     }
 
     msgs.innerHTML = "GoldHEN v2.4b18.10 berhasil dimuat.";
-    if (typeof showSuccessCloseDialog === "function") {
-      showSuccessCloseDialog("GoldHEN v2.4b18.10 berhasil dimuat.");
-    }
     logger.info("===END===");
   } catch (e) {
     msgs.innerHTML = "Failed to Load! Restart Your Console ...";

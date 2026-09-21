@@ -9,10 +9,6 @@ underlying scene contributors remain credited in the website.
 PS4 10.00–11.02, following the compatibility range stated by the upstream
 project.
 
-After GoldHEN loads successfully, the site shows a close-browser confirmation.
-Automatic closing is attempted only after the user selects **Tutup Browser**;
-when the PS4 browser blocks it, the page displays manual closing instructions.
-
 The root page and every required payload are listed in one Application Cache
 manifest. The interface no longer depends on external fonts, so a completed
 cache works without internet. A separate local-host package can serve the same
