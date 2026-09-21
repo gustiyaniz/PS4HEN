@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html manifest="css.manifest">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#080d1b">
+    <title>G-Playstation PS4 HEN | Installing Cache</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="main-title">
+            <span class="highlight">G-Playstation</span>
+            <span class="ps4-text"> PS4</span>
+            <span class="hen-text"> HEN</span>
+        </h1>
+        <div class="subtitle">Installing Cache</div>
+        <hr class="separator">
+        <div class="status-bar">
+            <span id="msgs" class="status-text loading">Installing cache…</span>
+        </div>
+    </div>
+
+<script>
+history.replaceState(null, null, 'index.html');
+
+function DLProgress(e) {
+    var Percent = Math.round(e.loaded / e.total * 100);
+    window.msgs.innerHTML = 'Installing cache: ' + Percent + '%';
+}
+
+function DisplayCacheProgress() {
+    window.msgs.innerHTML = 'Cache installed successfully';
+    window.msgs.className = 'status-text';
+    setTimeout(function() {
+        window.msgs.innerHTML = 'Close and reopen the browser.';
+    }, 1500);
+}
+
+window.applicationCache.addEventListener("progress", DLProgress, false);
+window.applicationCache.oncached = function(e) { DisplayCacheProgress(); };
+window.applicationCache.onupdateready = function(e) { DisplayCacheProgress(); };
+window.applicationCache.onerror = function(e) {
+    window.msgs.innerHTML = 'Cache error. Clear browser data and reopen.';
+    window.msgs.className = 'status-text error';
+};
+</script>
+</body>
+</html>
